@@ -55,7 +55,7 @@ public class ModuleSim implements ModuleIO {
 		drive = new CANSparkMax(driveChannel, CANSparkMaxLowLevel.MotorType.kBrushless);
 		steer = new CANSparkMax(steerChannel, CANSparkMaxLowLevel.MotorType.kBrushless);
 
-		encoder = new CANCoderSim(encoderChannel, encoderOffset);
+		encoder = new CANCoderSim(encoderChannel, encoderOffset,DCMotor.getNEO(1).withReduction((150 / 7) / 1));
 
 		REVPhysicsSim.getInstance().addSparkMax(drive, DCMotor.getNEO(1).withReduction(6.74 / 1)); // The gear ratio is 6.74/1
 		REVPhysicsSim.getInstance().addSparkMax(steer, DCMotor.getNEO(1).withReduction((150 / 7) / 1)); // The gear ratio is 150/7 : 1
