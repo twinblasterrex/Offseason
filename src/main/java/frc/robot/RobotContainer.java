@@ -11,44 +11,42 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import static edu.wpi.first.wpilibj.PowerDistribution.ModuleType.kRev;
 import static edu.wpi.first.wpilibj.RobotBase.isReal;
 
-public class RobotContainer
-{
-    public RobotContainer()
-    {
-        Logger.getInstance().recordMetadata("ProjectName", "Off_season"); // Set a metadata value
-        if (isReal()) {
-            Logger.getInstance().addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
-            Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-            new PowerDistribution(1, kRev); // Enables power distribution logging
-        } else {
-            // Reguler sim
-            Logger.getInstance().addDataReceiver(new WPILOGWriter("C:\\Users\\mloma\\IdeaProjects\\AdvantageKit\\logSim")); // Log to a USB stick
-            Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-            new PowerDistribution(1, kRev); // Enables power distribution logging
-        }
+public class RobotContainer {
+	public RobotContainer() {
+		Logger.getInstance().recordMetadata("ProjectName", "Off_season"); // Set a metadata value
+		if (isReal()) {
+			Logger.getInstance().addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
+			Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+			new PowerDistribution(1, kRev); // Enables power distribution logging
+		} else {
+			// Reguler sim
+			Logger.getInstance().addDataReceiver(new WPILOGWriter("C:\\Users\\mloma\\IdeaProjects\\AdvantageKit\\logSim")); // Log to a USB stick
+			Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+			new PowerDistribution(1, kRev); // Enables power distribution logging
+		}
 
-        Logger.getInstance().start();
+		Logger.getInstance().start();
 
-        DrivetrainSubsystem.getInstance().setDefaultCommand(new DefaultDriveCommand());
-        // Configure the trigger bindings
-        configureBindings();
-    }
+		DrivetrainSubsystem.getInstance().setDefaultCommand(new DefaultDriveCommand());
+		// Configure the trigger bindings
+		configureBindings();
+	}
 
-    /** Use this method to define your trigger->command mappings. */
-    private void configureBindings()
-    {
+	/**
+	 * Use this method to define your trigger->command mappings.
+	 */
+	private void configureBindings() {
 
-    }
-    
-    
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand()
-    {
-        // TODO: Implement properly
-        return null;
-    }
+	}
+
+
+	/**
+	 * Use this to pass the autonomous command to the main {@link Robot} class.
+	 *
+	 * @return the command to run in autonomous
+	 */
+	public Command getAutonomousCommand() {
+		// TODO: Implement properly
+		return null;
+	}
 }

@@ -9,20 +9,17 @@ public class NavxSim {
 	public NavxSim() {
 	}
 
-	public void update(double updateTime)
-	{
+	public void update(double updateTime) {
 		double currentAngle = rotation.getRadians();
 
 		rotation = new Rotation2d(currentAngle + (updateTime * rate));
 	}
 
-	public Rotation2d getRotation()
-	{
+	public Rotation2d getRotation() {
 		return rotation;
 	}
 
 	/**
-	 *
 	 * @param angle RADIANS -PI to PI
 	 */
 	public void setRotation(double angle) {

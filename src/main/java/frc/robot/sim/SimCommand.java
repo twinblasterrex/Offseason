@@ -1,7 +1,6 @@
 package frc.robot.sim;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.sim.SimSubsystem;
 
 
 public class SimCommand extends CommandBase {

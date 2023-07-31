@@ -3,7 +3,7 @@ package frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
-public class ModuleReal implements ModuleIO{
+public class ModuleReal implements ModuleIO {
 
 	private final int driveChannel;
 	private final int steerChannel;
@@ -15,8 +15,7 @@ public class ModuleReal implements ModuleIO{
 			int steerChannel,
 			int encoderChannel,
 			double encoderOffset
-	)
-	{
+	) {
 
 		this.driveChannel = driveChannel;
 		this.steerChannel = steerChannel;

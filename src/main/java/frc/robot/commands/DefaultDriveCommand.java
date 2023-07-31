@@ -10,6 +10,7 @@ import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 public class DefaultDriveCommand extends CommandBase {
 	private final DrivetrainSubsystem drivetrainSubsystem = DrivetrainSubsystem.getInstance();
 	private final XboxController controller = new XboxController(0);
+
 	public DefaultDriveCommand() {
 
 		addRequirements(this.drivetrainSubsystem);
@@ -24,9 +25,9 @@ public class DefaultDriveCommand extends CommandBase {
 	public void execute() {
 
 		Deadband x, y, z;
-		x = new Deadband(.05,0);
-		y = new Deadband(.05,0);
-		z = new Deadband(.05,0);
+		x = new Deadband(.05, 0);
+		y = new Deadband(.05, 0);
+		z = new Deadband(.05, 0);
 
 		double xInput, yInput, zInput;
 		xInput = -controller.getLeftY();
@@ -48,8 +49,7 @@ public class DefaultDriveCommand extends CommandBase {
 
 		drivetrainSubsystem.setTeleopDrive(new ChassisSpeeds(xInput, yInput, zInput));
 
-		if (controller.getRightTriggerAxis() > .75)
-		{
+		if (controller.getRightTriggerAxis() > .75) {
 			drivetrainSubsystem.resetGyro();
 		}
 	}

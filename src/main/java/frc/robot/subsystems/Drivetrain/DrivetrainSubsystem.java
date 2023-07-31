@@ -6,9 +6,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.*;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.NavxSim;
 import frc.robot.Constants;
@@ -68,7 +65,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 
 
-		odometry = new SwerveDriveOdometry(kinematics, getRotation(),modulePositions, new Pose2d());
+		odometry = new SwerveDriveOdometry(kinematics, getRotation(), modulePositions, new Pose2d());
 
 	}
 
@@ -119,8 +116,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		back_right.periodic();
 
 		// Updating simulate things like the gyro scope
-		if (Robot.isSimulation())
-		{
+		if (Robot.isSimulation()) {
 			gyro_sim.setRate(speeds.omegaRadiansPerSecond);
 			gyro_sim.update(Robot.defaultPeriodSecs);
 		}
@@ -131,7 +127,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		Logger.getInstance().recordOutput("Drivetrain/GyroAngle_RADIENS", gyro_sim.getRotation().getRadians());
 		Logger.getInstance().recordOutput("Drivetrain/Pose", getPose());
 
-		Logger.getInstance().recordOutput("Drivetrain/ModulePositions", new double[] { // The unit is radians
+		Logger.getInstance().recordOutput("Drivetrain/ModulePositions", new double[]{ // The unit is radians
 				states[0].angle.getRadians(), states[0].speedMetersPerSecond,
 				states[1].angle.getRadians(), states[1].speedMetersPerSecond,
 				states[2].angle.getRadians(), states[2].speedMetersPerSecond,
@@ -146,9 +142,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	}
 
-	public void resetOdometry(Pose2d pose)
-	{
-		odometry.resetPosition(getRotation(),modulePositions,pose);
+	public void resetOdometry(Pose2d pose) {
+		odometry.resetPosition(getRotation(), modulePositions, pose);
 	}
 
 	public Rotation2d getRotation() // This is the rotation of the robot based on gyro
@@ -186,18 +181,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		autoDrive = mAutoDrive;
 	}
 
-	public Pose2d getPose()
-	{
+	public Pose2d getPose() {
 		return odometry.getPoseMeters();
 	}
-	public void resetGyro()
-	{
-		if (Robot.isSimulation())
-		{
+
+	public void resetGyro() {
+		if (Robot.isSimulation()) {
 			gyro_sim.resetData();
 		}
-		if (Robot.isReal())
-		{
+		if (Robot.isReal()) {
 			gyro.zeroYaw();
 		}
 	}
