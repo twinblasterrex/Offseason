@@ -68,6 +68,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 
 
+		odometry = new SwerveDriveOdometry(kinematics, getRotation(),modulePositions, new Pose2d());
+
 	}
 
 	@SuppressWarnings("WeakerAccess")
@@ -117,13 +119,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		back_right.periodic();
 
 		// Updating simulate things like the gyro scope
-		System.out.println(speeds.omegaRadiansPerSecond);
 		if (Robot.isSimulation())
 		{
 			gyro_sim.setRate(speeds.omegaRadiansPerSecond);
 			gyro_sim.update(Robot.defaultPeriodSecs);
 		}
 
+		odometry.update(getRotation(), modulePositions);
 
 		// Logging features
 		Logger.getInstance().recordOutput("Drivetrain/GyroAngle_RADIENS", gyro_sim.getRotation().getRadians());
@@ -142,6 +144,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		back_right.log();
 
 
+	}
+
+	public void resetOdometry(Pose2d pose)
+	{
+		odometry.resetPosition(getRotation(),modulePositions,pose);
 	}
 
 	public Rotation2d getRotation() // This is the rotation of the robot based on gyro
@@ -181,7 +188,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	public Pose2d getPose()
 	{
-		return new Pose2d();
+		return odometry.getPoseMeters();
+	}
+	public void resetGyro()
+	{
+		if (Robot.isSimulation())
+		{
+			gyro_sim.resetData();
+		}
+		if (Robot.isReal())
+		{
+			gyro.zeroYaw();
+		}
 	}
 
 	public static class CONSTANTS {

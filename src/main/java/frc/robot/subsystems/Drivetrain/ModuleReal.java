@@ -26,7 +26,7 @@ public class ModuleReal implements ModuleIO{
 
 	@Override
 	public SwerveModulePosition getModulePosition() {
-		return null;
+		return new SwerveModulePosition();
 	}
 
 	@Override

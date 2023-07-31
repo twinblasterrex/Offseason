@@ -41,7 +41,17 @@ public class DefaultDriveCommand extends CommandBase {
 		yInput = yInput * DrivetrainSubsystem.CONSTANTS.MAX_SPEED;
 		zInput = zInput * DrivetrainSubsystem.CONSTANTS.MAX_TURNING_SPEED;
 
+		xInput = Math.pow(xInput, 3);
+		yInput = Math.pow(yInput, 3);
+		zInput = Math.pow(zInput, 3);
+
+
 		drivetrainSubsystem.setTeleopDrive(new ChassisSpeeds(xInput, yInput, zInput));
+
+		if (controller.getRightTriggerAxis() > .75)
+		{
+			drivetrainSubsystem.resetGyro();
+		}
 	}
 
 	@Override

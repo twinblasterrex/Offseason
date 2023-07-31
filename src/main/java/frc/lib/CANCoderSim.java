@@ -1,9 +1,12 @@
 package frc.lib;
 
-public class CANCoderSim {
+import com.ctre.phoenix.sensors.CANCoder;
+
+public class CANCoderSim{
 
 	public CANCoderSim(int id, double offset)
 	{
+		CANCoder canCoder;
 
 	}
 
