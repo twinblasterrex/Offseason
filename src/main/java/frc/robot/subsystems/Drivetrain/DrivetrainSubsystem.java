@@ -10,7 +10,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.NavxSim;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.util.RobotStateENUE;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.Objects;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -23,18 +26,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private final ModuleIO back_right;
 	//
 	//
-	private SwerveDriveKinematics kinematics;
-	private SwerveDriveOdometry odometry;
+	private final SwerveDriveKinematics kinematics;
+	private final SwerveDriveOdometry odometry;
 	private SwerveModuleState[] targetStates; // This is the current applied states
 	private SwerveModuleState[] currentStates; // These are the states according to the sensors on the swerve modules
-	private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()}; // Each swerve module class will manage the module positions and it will be combined in the update drive function
+	private final SwerveModulePosition[] modulePositions = {new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()}; // Each swerve module class will manage the module positions and it will be combined in the update drive function
 	//
 	//
 	private ChassisSpeeds autoDrive = new ChassisSpeeds();
 	private ChassisSpeeds teleopDrive = new ChassisSpeeds();
 	private ChassisSpeeds visionDrive = new ChassisSpeeds();
 	//
-	private DrivetrainMode drivetrainMode;
+	private final DrivetrainMode drivetrainMode;
 	//
 	//
 	private NavxSim gyro_sim;
@@ -45,25 +48,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 		kinematics = CONSTANTS.KINEMATICS;
 
-		switch (Constants.STATE) {
-			case isReal:
-				front_left = new ModuleReal(6, 5, 15, 269.30);
-				front_right = new ModuleReal(7, 8, 13, 238.60);
-				back_left = new ModuleReal(1, 2, 16, 168.22);
-				back_right = new ModuleReal(3, 4, 14, 79.63);
+		if (Objects.requireNonNull(Constants.STATE) == RobotStateENUE.isReal) {
+			front_left = new ModuleReal(6, 5, 15, 269.30);
+			front_right = new ModuleReal(7, 8, 13, 238.60);
+			back_left = new ModuleReal(1, 2, 16, 168.22);
+			back_right = new ModuleReal(3, 4, 14, 79.63);
 
-				gyro = new AHRS();
-				break;
-			default:
-				front_left = new ModuleSim(6, 5, 15, 269.30);
-				front_right = new ModuleSim(7, 8, 13, 238.60);
-				back_left = new ModuleSim(1, 2, 16, 168.22);
-				back_right = new ModuleSim(3, 4, 14, 79.63);
+			gyro = new AHRS();
+		} else {
+			front_left = new ModuleSim(6, 5, 15, 269.30);
+			front_right = new ModuleSim(7, 8, 13, 238.60);
+			back_left = new ModuleSim(1, 2, 16, 168.22);
+			back_right = new ModuleSim(3, 4, 14, 79.63);
 
-				gyro_sim = new NavxSim();
-				break;
+			gyro_sim = new NavxSim();
 		}
-
 
 		odometry = new SwerveDriveOdometry(kinematics, getRotation(), modulePositions, new Pose2d());
 
@@ -99,6 +98,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 						ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getRotation())
 				);
 
+		targetStates = states;
+		currentStates = new SwerveModuleState[]{front_left.getState(), front_right.getState(), back_left.getState(), back_right.getState()};
 		// The angle is in Rotation
 		front_left.setModuleState(states[0]);
 		front_right.setModuleState(states[1]);
@@ -192,6 +193,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		if (Robot.isReal()) {
 			gyro.zeroYaw();
 		}
+	}
+
+	public SwerveModuleState[] getTargetStates() {
+		return targetStates;
+	}
+
+	public SwerveModuleState[] getCurrentStates() {
+		return currentStates;
 	}
 
 	public static class CONSTANTS {
