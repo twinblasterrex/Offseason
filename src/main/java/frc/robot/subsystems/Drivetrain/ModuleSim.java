@@ -71,6 +71,8 @@ public class ModuleSim implements ModuleIO{
 
 		driveController.setTolerance(20);
 		driveController.setIntegratorRange(-12,12);
+
+		driveController.enableContinuousInput(-180, 180);
 	}
 
 	@Override
@@ -115,6 +117,16 @@ public class ModuleSim implements ModuleIO{
 
 	@Override
 	public double steerPosition() {
+		return 0;
+	}
+
+	@Override
+	public double getRawEncoderOutput() {
+		return 0;
+	}
+
+	@Override
+	public double getRPM() {
 		return 0;
 	}
 

@@ -70,6 +70,16 @@ public class ModuleReal implements ModuleIO{
 	}
 
 	@Override
+	public double getRawEncoderOutput() {
+		return 0;
+	}
+
+	@Override
+	public double getRPM() {
+		return 0;
+	}
+
+	@Override
 	public void periodic() {
 
 	}

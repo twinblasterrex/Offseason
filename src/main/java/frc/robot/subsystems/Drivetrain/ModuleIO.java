@@ -20,6 +20,8 @@ public interface ModuleIO {
 	public double steerSetpoint();
 	public double steerPosition();
 
+	public double getRawEncoderOutput();
+	public double getRPM(); // This is the RPM of the drive motor
 	public void periodic();
 
 	public default void log()

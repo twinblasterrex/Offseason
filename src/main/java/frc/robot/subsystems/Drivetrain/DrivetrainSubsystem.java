@@ -2,12 +2,14 @@ package frc.robot.subsystems.Drivetrain;
 
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.NavxSim;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -24,12 +26,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private SwerveDriveOdometry odometry;
 	private SwerveModuleState[] targetStates; // This is the current applied states
 	private SwerveModuleState[] currentStates; // These are the states according to the sensors on the swerve modules
-	private SwerveModulePosition[] modulePositions; // Each swerve module class will manage the module positions and it will be combined in the update drive function
+	private SwerveModulePosition[] modulePositions = {new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()}; // Each swerve module class will manage the module positions and it will be combined in the update drive function
 	//
 	//
-	private ChassisSpeeds autoDrive;
-	private ChassisSpeeds teleopDrive;
-	private ChassisSpeeds visionDrive;
+	private ChassisSpeeds autoDrive = new ChassisSpeeds();
+	private ChassisSpeeds teleopDrive = new ChassisSpeeds();
+	private ChassisSpeeds visionDrive = new ChassisSpeeds();
 	//
 	private DrivetrainMode drivetrainMode;
 	//
@@ -38,23 +40,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	private AHRS gyro;
 
 	private DrivetrainSubsystem() {
+		drivetrainMode = DrivetrainMode.kFullcontrollor;
 
 		kinematics = CONSTANTS.KINEMATICS;
 
 		switch (Constants.STATE) {
 			case isReal:
-				front_left = new ModuleReal(6,5,15,269.30);
-				front_right = new ModuleReal(7,8,13,238.60);
-				back_left = new ModuleReal(1,2,16,168.22);
-				back_right = new ModuleReal(3,4,14,79.63);
+				front_left = new ModuleReal(6, 5, 15, 269.30);
+				front_right = new ModuleReal(7, 8, 13, 238.60);
+				back_left = new ModuleReal(1, 2, 16, 168.22);
+				back_right = new ModuleReal(3, 4, 14, 79.63);
 
 				gyro = new AHRS();
 				break;
 			default:
-				front_left = new ModuleSim(6,5,15,269.30);
-				front_right = new ModuleSim(7,8,13,238.60);
-				back_left = new ModuleSim(1,2,16,168.22);
-				back_right = new ModuleSim(3,4,14,79.63);
+				front_left = new ModuleSim(6, 5, 15, 269.30);
+				front_right = new ModuleSim(7, 8, 13, 238.60);
+				back_left = new ModuleSim(1, 2, 16, 168.22);
+				back_right = new ModuleSim(3, 4, 14, 79.63);
 
 				gyro_sim = new NavxSim();
 				break;
@@ -71,8 +74,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return INSTANCE;
 	}
 
-	private void updatingDrive() // This function should be run periodically and is where the swerve module
-	{
+
+	@Override
+	public void periodic() {
 		ChassisSpeeds speeds; // This is the speeds that we will set
 		speeds = new ChassisSpeeds();
 		switch (drivetrainMode) {
@@ -92,6 +96,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 						ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getRotation())
 				);
 
+		// The angle is in Rotation
 		front_left.setModuleState(states[0]);
 		front_right.setModuleState(states[1]);
 		back_left.setModuleState(states[2]);
@@ -106,18 +111,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		front_right.periodic();
 		back_left.periodic();
 		back_right.periodic();
-	}
 
-	private void logging() // This function is for logging all of the module data and general swerve data 
-	{
 
-	}
+		Logger.getInstance().recordOutput("Drivetrain/GyroAngle_DEGREES", getRotation().getDegrees());
+		Logger.getInstance().recordOutput("Drivetrain/Pose", getPose());
 
-	@Override
-	public void periodic() {
-		updatingDrive();
-
-		logging();
+		Logger.getInstance().recordOutput("Drivetrain/ModulePositions", new double[] { // The unit is radians
+				states[0].angle.getRadians(), states[0].speedMetersPerSecond,
+				states[1].angle.getRadians(), states[1].speedMetersPerSecond,
+				states[2].angle.getRadians(), states[2].speedMetersPerSecond,
+				states[3].angle.getRadians(), states[3].speedMetersPerSecond
+		}); // This is for the visualization feature
 	}
 
 	public Rotation2d getRotation() // This is the rotation of the robot based on gyro
@@ -153,6 +157,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	public void setAutoDrive(ChassisSpeeds mAutoDrive) {
 		autoDrive = mAutoDrive;
+	}
+
+	public Pose2d getPose()
+	{
+		return new Pose2d();
 	}
 
 	static class CONSTANTS {
