@@ -6,9 +6,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.NavxSim;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import org.littletonrobotics.junction.Logger;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -112,8 +116,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		back_left.periodic();
 		back_right.periodic();
 
+		// Updating simulate things like the gyro scope
+		System.out.println(speeds.omegaRadiansPerSecond);
+		if (Robot.isSimulation())
+		{
+			gyro_sim.setRate(speeds.omegaRadiansPerSecond);
+			gyro_sim.update(Robot.defaultPeriodSecs);
+		}
 
-		Logger.getInstance().recordOutput("Drivetrain/GyroAngle_DEGREES", getRotation().getDegrees());
+
+		// Logging features
+		Logger.getInstance().recordOutput("Drivetrain/GyroAngle_RADIENS", gyro_sim.getRotation().getRadians());
 		Logger.getInstance().recordOutput("Drivetrain/Pose", getPose());
 
 		Logger.getInstance().recordOutput("Drivetrain/ModulePositions", new double[] { // The unit is radians
@@ -122,6 +135,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				states[2].angle.getRadians(), states[2].speedMetersPerSecond,
 				states[3].angle.getRadians(), states[3].speedMetersPerSecond
 		}); // This is for the visualization feature
+
+		front_left.log();
+		front_right.log();
+		back_left.log();
+		back_right.log();
+
+
 	}
 
 	public Rotation2d getRotation() // This is the rotation of the robot based on gyro
@@ -130,7 +150,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 			case isReal:
 				return gyro.getRotation2d();
 			case isSim:
-				return new Rotation2d(Math.toRadians(gyro_sim.getAngle()));
+				return gyro_sim.getRotation();
 		}
 		return null;
 	}
@@ -164,7 +184,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		return new Pose2d();
 	}
 
-	static class CONSTANTS {
+	public static class CONSTANTS {
 		// This is for a frame perimeter of 30x30 inches these units are in meters
 		public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.635;
 		public static final double DRIVETRAIN_WHEELBASE_METERS = 0.635;
@@ -181,7 +201,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				// Back right
 				new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
 						-DRIVETRAIN_WHEELBASE_METERS / 2.0));
-		public static double MAX_SPEED = 3.68; // This is around 12 feet per second
+		public static double MAX_SPEED = 4.4196; // This is around 12 feet per second
+		public static double MAX_TURNING_SPEED = Math.PI * 2;
 
 		public static final class frontLeft {
 			public final static int STEER_ID = 5;

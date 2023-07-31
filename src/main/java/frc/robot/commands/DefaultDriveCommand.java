@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.lib.Deadband;
 import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 
 
@@ -21,7 +22,26 @@ public class DefaultDriveCommand extends CommandBase {
 
 	@Override
 	public void execute() {
-		drivetrainSubsystem.setTeleopDrive(new ChassisSpeeds(controller.getLeftY(), controller.getLeftX(), controller.getRightX()));
+
+		Deadband x, y, z;
+		x = new Deadband(.05,0);
+		y = new Deadband(.05,0);
+		z = new Deadband(.05,0);
+
+		double xInput, yInput, zInput;
+		xInput = -controller.getLeftY();
+		yInput = -controller.getLeftX();
+		zInput = controller.getRightX();
+
+		xInput = x.apply(xInput);
+		yInput = y.apply(yInput);
+		zInput = z.apply(zInput);
+
+		xInput = xInput * DrivetrainSubsystem.CONSTANTS.MAX_SPEED;
+		yInput = yInput * DrivetrainSubsystem.CONSTANTS.MAX_SPEED;
+		zInput = zInput * DrivetrainSubsystem.CONSTANTS.MAX_TURNING_SPEED;
+
+		drivetrainSubsystem.setTeleopDrive(new ChassisSpeeds(xInput, yInput, zInput));
 	}
 
 	@Override

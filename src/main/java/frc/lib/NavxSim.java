@@ -1,52 +1,49 @@
 package frc.lib;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class NavxSim {
-	private final AnalogGyro gyro;
-	private final AnalogGyroSim gyroSim;
+	private Rotation2d rotation = new Rotation2d();
+	private double rate = 0;
 
-	public NavxSim()
-	{
-		gyro = new AnalogGyro(0);
-		gyroSim = new AnalogGyroSim(gyro);
+	public NavxSim() {
 	}
 
 	public void update(double updateTime)
 	{
-		gyro.getAnalogInput();
-		setAngle((getRate() * updateTime)+ getAngle());
-		if (getAngle() > (2* Math.PI))
-		{
-			setAngle(getAngle() - (2 * Math.PI));
-		} else if (getAngle() < 0) {
-			setAngle(getAngle() + (2 * Math.PI));
-		}
+		double currentAngle = rotation.getRadians();
+
+		rotation = new Rotation2d(currentAngle + (updateTime * rate));
+	}
+
+	public Rotation2d getRotation()
+	{
+		return rotation;
 	}
 
 	/**
-	 * This function gives you the angle in degrees 0-360
-	 * @return
+	 *
+	 * @param angle RADIANS -PI to PI
 	 */
-	public double getAngle() {
-		return gyro.getAngle();
-	}
+	public void setRotation(double angle) {
+		rotation = new Rotation2d(angle);
 
-	public void setAngle(double angle) {
-		gyroSim.setAngle(angle);
 	}
 
 	public double getRate() {
-		return gyroSim.getRate();
+		return rate;
 	}
 
+	/**
+	 * @param rate RADIANS per second
+	 */
 	public void setRate(double rate) {
-		gyroSim.setRate(rate);
+		this.rate = rate;
 	}
 
 	public void resetData() {
-		gyroSim.resetData();
+		rate = 0;
+		rotation = new Rotation2d(0);
 	}
 
 }
