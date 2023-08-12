@@ -5,31 +5,39 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public interface ModuleIO {
 
-	public SwerveModulePosition getModulePosition();
+	SwerveModulePosition getModulePosition();
 
-	public void setModuleState(SwerveModuleState state);// The unites should be in radians and in meters per second
+	void setModuleState(SwerveModuleState state);// The unites should be in radians and in meters per second
 
-	public SwerveModuleState getState();
+	/**
+	 * @return This returns the target state that the module is currently trying to achieve
+	 */
+	SwerveModuleState getTargetState();
 
-	public double driveMotorTemp();
+	/**
+	 * @return This is the state read from the sensors
+	 */
+	SwerveModuleState getCurrentState();
 
-	public double steerMotorTemp();
+	double getDriveMotorTemp();
 
-	public double driveMotorAppliedVoltage();
+	double getSteerMotorTemp();
 
-	public double steerMotorAppliedVoltage();
+	double getDriveMotorAppliedVoltage();
 
-	public double steerSetpoint();
+	double steerMotorAppliedVoltage();
 
-	public double steerPosition();
+	double getSteerSetpoint();
 
-	public double getRawEncoderOutput();
+	double getSteerPosition();
 
-	public double getRPM(); // This is the RPM of the drive motor
+	double getRawEncoderOutput();
 
-	public void periodic();
+	double getRPM(); // This is the RPM of the drive motor
 
-	public default void log() {
+	void periodic();
+
+	default void log() {
 
 	}
 }

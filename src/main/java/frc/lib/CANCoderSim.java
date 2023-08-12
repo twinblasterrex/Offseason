@@ -13,15 +13,14 @@ public class CANCoderSim {
 	private Rotation2d rotation;
 
 	public CANCoderSim(int id, double offset, DCMotor motor) {
-		this.motor = new DCMotorSim(motor,1,1);
+		this.motor = new DCMotorSim(motor, 1, 1);
 		rate = 0;
 		rotation = new Rotation2d();
 		this.id = id;
 		this.offset = offset;
 	}
 
-	public void setVoltage(double voltage)
-	{
+	public void setVoltage(double voltage) {
 		motor.setInputVoltage(voltage);
 	}
 

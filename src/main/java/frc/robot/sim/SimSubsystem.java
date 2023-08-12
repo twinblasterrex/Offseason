@@ -1,6 +1,7 @@
 package frc.robot.sim;
 
 
+import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SimSubsystem extends SubsystemBase {
@@ -16,6 +17,12 @@ public class SimSubsystem extends SubsystemBase {
 			INSTANCE = new SimSubsystem();
 		}
 		return INSTANCE;
+	}
+
+	@Override
+	public void periodic() {
+
+		REVPhysicsSim.getInstance().run();
 	}
 }
 

@@ -34,22 +34,27 @@ public class ModuleReal implements ModuleIO {
 	}
 
 	@Override
-	public SwerveModuleState getState() {
+	public SwerveModuleState getTargetState() {
 		return null;
 	}
 
 	@Override
-	public double driveMotorTemp() {
+	public SwerveModuleState getCurrentState() {
+		return null;
+	}
+
+	@Override
+	public double getDriveMotorTemp() {
 		return 0;
 	}
 
 	@Override
-	public double steerMotorTemp() {
+	public double getSteerMotorTemp() {
 		return 0;
 	}
 
 	@Override
-	public double driveMotorAppliedVoltage() {
+	public double getDriveMotorAppliedVoltage() {
 		return 0;
 	}
 
@@ -59,12 +64,12 @@ public class ModuleReal implements ModuleIO {
 	}
 
 	@Override
-	public double steerSetpoint() {
+	public double getSteerSetpoint() {
 		return 0;
 	}
 
 	@Override
-	public double steerPosition() {
+	public double getSteerPosition() {
 		return 0;
 	}
 

@@ -15,6 +15,8 @@ import org.littletonrobotics.junction.Logger;
 
 import java.util.Objects;
 
+import static frc.robot.subsystems.Drivetrain.Module.*;
+
 public class DrivetrainSubsystem extends SubsystemBase {
 
 	private static DrivetrainSubsystem INSTANCE;
@@ -28,16 +30,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	//
 	private final SwerveDriveKinematics kinematics;
 	private final SwerveDriveOdometry odometry;
+	private final SwerveModulePosition[] modulePositions = {new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()}; // Each swerve module class will manage the module positions and it will be combined in the update drive function
+	//
+	private final DrivetrainMode drivetrainMode;
 	private SwerveModuleState[] targetStates; // This is the current applied states
 	private SwerveModuleState[] currentStates; // These are the states according to the sensors on the swerve modules
-	private final SwerveModulePosition[] modulePositions = {new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()}; // Each swerve module class will manage the module positions and it will be combined in the update drive function
 	//
 	//
 	private ChassisSpeeds autoDrive = new ChassisSpeeds();
 	private ChassisSpeeds teleopDrive = new ChassisSpeeds();
 	private ChassisSpeeds visionDrive = new ChassisSpeeds();
-	//
-	private final DrivetrainMode drivetrainMode;
 	//
 	//
 	private NavxSim gyro_sim;
@@ -56,10 +58,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 			gyro = new AHRS();
 		} else {
-			front_left = new ModuleSim(6, 5, 15, 269.30);
-			front_right = new ModuleSim(7, 8, 13, 238.60);
-			back_left = new ModuleSim(1, 2, 16, 168.22);
-			back_right = new ModuleSim(3, 4, 14, 79.63);
+			front_left = new ModuleSim(6, 5, 15, 269.30, FL);
+			front_right = new ModuleSim(7, 8, 13, 238.60, FR);
+			back_left = new ModuleSim(1, 2, 16, 168.22, BL);
+			back_right = new ModuleSim(3, 4, 14, 79.63, BR);
 
 			gyro_sim = new NavxSim();
 		}
@@ -99,7 +101,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				);
 
 		targetStates = states;
-		currentStates = new SwerveModuleState[]{front_left.getState(), front_right.getState(), back_left.getState(), back_right.getState()};
+		currentStates = new SwerveModuleState[]{front_left.getCurrentState(), front_right.getCurrentState(), back_left.getCurrentState(), back_right.getCurrentState()};
 		// The angle is in Rotation
 		front_left.setModuleState(states[0]);
 		front_right.setModuleState(states[1]);
@@ -220,7 +222,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 				// Back right
 				new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
 						-DRIVETRAIN_WHEELBASE_METERS / 2.0));
-		public static double MAX_SPEED = 4.4196; // This is around 12 feet per second
+		public static double MAX_SPEED = 4.4196; // This is around 14.5 feet per second
 		public static double MAX_TURNING_SPEED = Math.PI * 2;
 
 		public static final class frontLeft {

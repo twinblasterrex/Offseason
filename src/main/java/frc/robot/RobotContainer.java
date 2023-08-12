@@ -1,14 +1,13 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.sim.SimSubsystem;
 import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import static edu.wpi.first.wpilibj.PowerDistribution.ModuleType.kRev;
 import static edu.wpi.first.wpilibj.RobotBase.isReal;
 
 public class RobotContainer {
@@ -17,12 +16,14 @@ public class RobotContainer {
 		if (isReal()) {
 			Logger.getInstance().addDataReceiver(new WPILOGWriter("/media/sda1/")); // Log to a USB stick
 			Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-			new PowerDistribution(1, kRev); // Enables power distribution logging
 		} else {
-			// Reguler sim
+			// Regular sim
 			Logger.getInstance().addDataReceiver(new WPILOGWriter("C:\\Users\\mloma\\IdeaProjects\\AdvantageKit\\logSim")); // Log to a USB stick
 			Logger.getInstance().addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-			new PowerDistribution(1, kRev); // Enables power distribution logging
+		}
+
+		if (Robot.isSimulation()) {
+			SimSubsystem.getInstance();
 		}
 
 		Logger.getInstance().start();

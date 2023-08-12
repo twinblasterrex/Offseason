@@ -30,9 +30,14 @@ public class DefaultDriveCommand extends CommandBase {
 		z = new Deadband(.05, 0);
 
 		double xInput, yInput, zInput;
+
 		xInput = -controller.getLeftY();
 		yInput = -controller.getLeftX();
 		zInput = controller.getRightX();
+
+		xInput = Math.pow(xInput, 3);
+		yInput = Math.pow(yInput, 3);
+		zInput = Math.pow(zInput, 3);
 
 		xInput = x.apply(xInput);
 		yInput = y.apply(yInput);
@@ -41,11 +46,6 @@ public class DefaultDriveCommand extends CommandBase {
 		xInput = xInput * DrivetrainSubsystem.CONSTANTS.MAX_SPEED;
 		yInput = yInput * DrivetrainSubsystem.CONSTANTS.MAX_SPEED;
 		zInput = zInput * DrivetrainSubsystem.CONSTANTS.MAX_TURNING_SPEED;
-
-		xInput = Math.pow(xInput, 3);
-		yInput = Math.pow(yInput, 3);
-		zInput = Math.pow(zInput, 3);
-
 
 		drivetrainSubsystem.setTeleopDrive(new ChassisSpeeds(xInput, yInput, zInput));
 
