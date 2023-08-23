@@ -12,8 +12,7 @@ import frc.lib.navx.NavxSim;
 import org.littletonrobotics.junction.LoggedRobot;
 
 public class Robot extends LoggedRobot {
-	private Navx navx = new NavxSim();
-
+	private Navx m_navx = new NavxSim();
 	private Command autonomousCommand;
 
 	private RobotContainer robotContainer;
@@ -58,9 +57,9 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		navx.setRate(100);
-		navx.update(Robot.defaultPeriodSecs);
-//		 System.out.println(navx.getRotation2d().getDegrees());
+		m_navx.setRate(.5);
+		m_navx.update(Robot.defaultPeriodSecs);
+		System.out.println(m_navx.getRotation2d().getDegrees());
 	}
 
 	@Override
