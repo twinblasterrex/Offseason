@@ -7,9 +7,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.lib.navx.Navx;
+import frc.lib.navx.NavxSim;
 import org.littletonrobotics.junction.LoggedRobot;
 
 public class Robot extends LoggedRobot {
+	private Navx navx = new NavxSim();
+
 	private Command autonomousCommand;
 
 	private RobotContainer robotContainer;
@@ -54,6 +58,9 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void teleopPeriodic() {
+		navx.setRate(100);
+		navx.update(Robot.defaultPeriodSecs);
+//		 System.out.println(navx.getRotation2d().getDegrees());
 	}
 
 	@Override
