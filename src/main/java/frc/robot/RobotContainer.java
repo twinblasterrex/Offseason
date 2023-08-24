@@ -1,7 +1,9 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.DriveCommand;
 import frc.robot.sim.SimSubsystem;
+import frc.robot.subsystems.Drivetrain.DrivetrainSubsystem;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
@@ -26,7 +28,7 @@ public class RobotContainer {
 
 		Logger.getInstance().start();
 
-//		DrivetrainSubsystem.getInstance().setDefaultCommand(new DefaultDriveCommand());
+		DrivetrainSubsystem.getInstance().setDefaultCommand(new DriveCommand());
 		// Configure the trigger bindings
 		configureBindings();
 	}

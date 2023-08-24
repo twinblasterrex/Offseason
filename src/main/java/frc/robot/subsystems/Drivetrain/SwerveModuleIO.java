@@ -6,7 +6,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public interface SwerveModuleIO {
 
-	public default SwerveModulePosition getModulePosition() {return null;}
+	public default SwerveModulePosition getModulePosition() {return new SwerveModulePosition();}
 	public default void setSwerveModuleState(SwerveModuleState state) {}
 
 	public default Rotation2d getRotation2d() {return new Rotation2d();};

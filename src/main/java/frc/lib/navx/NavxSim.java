@@ -15,8 +15,7 @@ public class NavxSim implements Navx {
 	@Override
 	public void update(double delta)
 	{
-		rot = rot.rotateBy(Rotation2d.fromRadians(getRate() * delta));
-		System.out.println(rot.getDegrees());
+		rot = rot.plus(Rotation2d.fromRadians(getRate() * delta));
 	}
 	@Override
 	public Rotation2d getRotation2d() {

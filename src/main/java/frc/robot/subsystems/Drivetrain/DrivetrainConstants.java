@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 public final class DrivetrainConstants {
-
 	// Mechanical Constants
 	// 0.5969 roughly
 	public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.635;

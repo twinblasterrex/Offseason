@@ -1,13 +1,17 @@
 package frc.robot.subsystems.Drivetrain;
 
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.navx.Navx;
 import frc.lib.navx.NavxReal;
 import frc.lib.navx.NavxSim;
 import frc.robot.Robot;
+import org.littletonrobotics.junction.Logger;
+
+import static frc.robot.subsystems.Drivetrain.DrivetrainConstants.*;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 	private static DrivetrainSubsystem INSTANCE;
@@ -48,10 +52,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	private DrivetrainSubsystem() {
 
-		frontLeftDetails = new ModuleDetails(drivetrainConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,drivetrainConstants.FRONT_LEFT_MODULE_STEER_MOTOR,drivetrainConstants.FRONT_LEFT_MODULE_STEER_ENCODER,drivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
-		frontRightDetails = new ModuleDetails(drivetrainConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,drivetrainConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,drivetrainConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,drivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET);
-		backLeftDetails = new ModuleDetails(drivetrainConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,drivetrainConstants.BACK_LEFT_MODULE_STEER_MOTOR,drivetrainConstants.BACK_LEFT_MODULE_STEER_ENCODER,drivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET);
-		backRightDetails = new ModuleDetails(drivetrainConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR, drivetrainConstants.BACK_RIGHT_MODULE_STEER_MOTOR, drivetrainConstants.BACK_RIGHT_MODULE_STEER_ENCODER, drivetrainConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
+		frontLeftDetails = new ModuleDetails(FRONT_LEFT_MODULE_DRIVE_MOTOR, FRONT_LEFT_MODULE_STEER_MOTOR, FRONT_LEFT_MODULE_STEER_ENCODER, FRONT_LEFT_MODULE_STEER_OFFSET);
+		frontRightDetails = new ModuleDetails(FRONT_RIGHT_MODULE_DRIVE_MOTOR, FRONT_RIGHT_MODULE_STEER_MOTOR, FRONT_RIGHT_MODULE_STEER_ENCODER, FRONT_RIGHT_MODULE_STEER_OFFSET);
+		backLeftDetails = new ModuleDetails(BACK_LEFT_MODULE_DRIVE_MOTOR, BACK_LEFT_MODULE_STEER_MOTOR, BACK_LEFT_MODULE_STEER_ENCODER, BACK_LEFT_MODULE_STEER_OFFSET);
+		backRightDetails = new ModuleDetails(BACK_RIGHT_MODULE_DRIVE_MOTOR, BACK_RIGHT_MODULE_STEER_MOTOR, BACK_RIGHT_MODULE_STEER_ENCODER, BACK_RIGHT_MODULE_STEER_OFFSET);
 
 		if (Robot.isSimulation())
 		{
@@ -87,8 +91,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		targetTeleopAutoAlineSpeeds = new ChassisSpeeds();
 		targetAutoAlineSpeeds = new ChassisSpeeds();
 
-		kinematics = DrivetrainConstants.KINEMATICS;
+		kinematics = KINEMATICS;
 		odometry = new SwerveDriveOdometry(kinematics, navx.getRotation2d(), new SwerveModulePosition[]{frontLeftPosition, frontRightPosition, backLeftPosition, backRightPosition});
+		mode = DrivetrainMode.teleop;
 	}
 
 	@Override
@@ -125,10 +130,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		backLeft.setSwerveModuleState(states[2]);
 		backRight.setSwerveModuleState(states[3]);
 
+		// Commented out for testing purposes
 		frontLeftState = states[0];
 		frontRightState = states[1];
 		backLeftState = states[2];
 		backRightState = states[3];
+
+		currentSpeeds = targetSpeed;
 
 		if (Robot.isSimulation())
 		{
@@ -138,12 +146,33 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 			navx.update(Robot.defaultPeriodSecs);
 		}
+
+		frontLeft.periodic();
+		frontRight.periodic();
+		backLeft.periodic();
+		backRight.periodic();
+
+		frontLeftPosition = frontLeft.getModulePosition();
+		frontRightPosition = frontRight.getModulePosition();
+		backLeftPosition = backLeft.getModulePosition();
+		backRightPosition = backRight.getModulePosition();
+
+		odometry.update(getRotation(), new SwerveModulePosition[]{frontLeftPosition, frontRightPosition, backLeftPosition, backRightPosition});
+
+		Logger.getInstance().recordOutput("states", states);
+		Logger.getInstance().recordOutput("rotation" ,getRotation().getRadians());
+		Logger.getInstance().recordOutput("pose", getPose());
+
 	}
 
 	public DrivetrainMode getMode() {
 		return mode;
 	}
 
+	public Rotation2d getRotation()
+	{
+		return navx.getRotation2d();
+	}
 	public void setMode(DrivetrainMode Mode) {
 		mode = Mode;
 	}
@@ -157,6 +186,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 	public void setTargetTeleopSpeeds(double x, double y, double z)
 	{
 		targetTeleopSpeeds = new ChassisSpeeds(x,y,z);
+	}
+
+	public Pose2d getPose()
+	{
+		return odometry.getPoseMeters();
 	}
 
 	public void setTargetAutoSpeeds(double x, double y, double z)
@@ -190,50 +224,4 @@ public class DrivetrainSubsystem extends SubsystemBase {
 		}
 		return INSTANCE;
 	}
-}
-
-
-final class drivetrainConstants
-{
-	// Mechanical Constants
-	// 0.5969 roughly
-	public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.635;
-	public static final double DRIVETRAIN_WHEELBASE_METERS = 0.635;
-	public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
-			// Front left
-			new Translation2d(DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-			// Front right
-			new Translation2d(DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					-DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-			// Back left
-			new Translation2d(-DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-			// Back right
-			new Translation2d(-DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-					-DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
-	public static final double WHEEL_DIAMETER = 0.0968375;
-	public static final double GEAR_RATIO = 8.16;
-
-	// PORT #s and OFFSETS
-	public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 6;
-	public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 5;
-	public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 15;
-	public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(269.30);
-
-	public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 8;
-	public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 7;
-	public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 13;
-	public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(238.62);
-
-	public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 2;
-	public static final int BACK_LEFT_MODULE_STEER_MOTOR = 1;
-	public static final int BACK_LEFT_MODULE_STEER_ENCODER = 16;
-	public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(168.22);
-
-	public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 4;
-	public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 3;
-	public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 14;
-	public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(79.63);
-
 }

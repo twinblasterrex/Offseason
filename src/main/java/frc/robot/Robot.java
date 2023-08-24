@@ -57,9 +57,6 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		m_navx.setRate(.5);
-		m_navx.update(Robot.defaultPeriodSecs);
-		System.out.println(m_navx.getRotation2d().getDegrees());
 	}
 
 	@Override

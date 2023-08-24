@@ -6,17 +6,21 @@ public class CanCoderSim {
 	private double rate;
 	private Rotation2d rot;
 	private final int id;
-	private int offset;
+	private double offset;
 
-	public CanCoderSim(int id, int offset)
+	public CanCoderSim(int id, double offset)
 	{
 		this.id = id;
 		this.offset = offset;
+
+		rot = new Rotation2d();
+		rate = 0;
 	}
 
 	public void update(double delta)
 	{
-		rot.rotateBy(Rotation2d.fromRadians(delta * rate));
+
+		rot = rot.plus(Rotation2d.fromRadians(delta * rate));
 	}
 
 	public double getRate() {
@@ -35,7 +39,7 @@ public class CanCoderSim {
 		rot = mRot;
 	}
 
-	public int getOffset() {
+	public double getOffset() {
 		return offset;
 	}
 
