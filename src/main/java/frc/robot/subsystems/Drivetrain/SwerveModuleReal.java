@@ -133,6 +133,12 @@ public class SwerveModuleReal implements SwerveModuleIO {
 	}
 
 	@Override
+	public void resetModulePositions() {
+		driveEncoder.setPosition(0);
+		position = new SwerveModulePosition();
+	}
+
+	@Override
 	public Rotation2d getRotation2d() {
 		return Rotation2d.fromDegrees(encoder.getAbsolutePosition());
 	}

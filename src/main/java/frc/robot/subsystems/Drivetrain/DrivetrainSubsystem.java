@@ -165,6 +165,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
 	}
 
+	public void resetOdometry(Pose2d newPose)
+	{
+		navx.zeroYaw();
+
+		frontLeft.resetModulePositions();
+		frontRight.resetModulePositions();
+		backLeft.resetModulePositions();
+		backRight.resetModulePositions();
+
+		frontLeftPosition = frontLeft.getModulePosition();
+		frontRightPosition = frontRight.getModulePosition();
+		backLeftPosition = backLeft.getModulePosition();
+		backRightPosition = backRight.getModulePosition();
+
+		odometry.resetPosition(getRotation(),new SwerveModulePosition[] {frontLeftPosition, frontRightPosition, backLeftPosition, backRightPosition}, newPose);
+	}
 	public DrivetrainMode getMode() {
 		return mode;
 	}

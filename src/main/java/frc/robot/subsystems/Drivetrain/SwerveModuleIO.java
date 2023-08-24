@@ -13,4 +13,6 @@ public interface SwerveModuleIO {
 	public default double getRPM() {return 0;}
 
 	public default void periodic() {}
+
+	public void resetModulePositions();
 }

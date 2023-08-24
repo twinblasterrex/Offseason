@@ -81,6 +81,12 @@ public class SwerveModuleSim implements SwerveModuleIO {
 	}
 
 	@Override
+	public void resetModulePositions() {
+		driveEncoder.setPosition(0);
+		position = new SwerveModulePosition();
+	}
+
+	@Override
 	public SwerveModulePosition getModulePosition() {
 		return position;
 	}
