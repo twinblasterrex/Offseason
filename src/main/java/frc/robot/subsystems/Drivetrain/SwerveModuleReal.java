@@ -1,13 +1,13 @@
 package frc.robot.subsystems.Drivetrain;
 
+import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
-import frc.lib.CANCoderSim;
 
 public class SwerveModuleReal implements SwerveModuleIO {
 	private CANSparkMax drive;
 	private CANSparkMax steer;
 
-	private CANCoderSim encoder;
+	private CANCoder encoder;
 	private double steerOffset;
 
 	public SwerveModuleReal(ModuleDetails details)
